@@ -1,0 +1,189 @@
+{
+  "id": "fx.particles",
+  "sourcePromptId": "FX-01",
+  "kind": "static-effect-sprites",
+  "frames": [
+    {
+      "id": "fx.cyan-sparkle",
+      "title": "Бирюзовые искры обучения",
+      "alt": "Семь бирюзовых искр-звёзд",
+      "sourcePath": "art/source/fx/success/cyan-sparkle.png",
+      "sourceSheetCrop": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "sourceMetrics": {
+        "width": 627,
+        "height": 627,
+        "alpha": true,
+        "alphaExtrema": [
+          0,
+          253
+        ],
+        "alphaBounds": [
+          132,
+          136,
+          535,
+          540
+        ]
+      },
+      "finalPath": "art/final/fx/success/cyan-sparkle.webp",
+      "finalDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "finalBytes": 56318,
+      "atlasRect": {
+        "x": 0,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "license": "original-project-artwork"
+    },
+    {
+      "id": "fx.gold-pulse",
+      "title": "Золотой импульс успеха",
+      "alt": "Овальный золотой ореол со звездой",
+      "sourcePath": "art/source/fx/success/gold-pulse.png",
+      "sourceSheetCrop": [
+        627,
+        0,
+        1254,
+        627
+      ],
+      "sourceMetrics": {
+        "width": 627,
+        "height": 627,
+        "alpha": true,
+        "alphaExtrema": [
+          0,
+          253
+        ],
+        "alphaBounds": [
+          30,
+          162,
+          577,
+          503
+        ]
+      },
+      "finalPath": "art/final/fx/success/gold-pulse.webp",
+      "finalDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "finalBytes": 67970,
+      "atlasRect": {
+        "x": 512,
+        "y": 0,
+        "w": 512,
+        "h": 512
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "license": "original-project-artwork"
+    },
+    {
+      "id": "fx.amber-ripple",
+      "title": "Мягкая подсказка",
+      "alt": "Два янтарных концентрических круга",
+      "sourcePath": "art/source/fx/attention/amber-ripple.png",
+      "sourceSheetCrop": [
+        0,
+        627,
+        627,
+        1254
+      ],
+      "sourceMetrics": {
+        "width": 627,
+        "height": 627,
+        "alpha": true,
+        "alphaExtrema": [
+          0,
+          252
+        ],
+        "alphaBounds": [
+          80,
+          33,
+          595,
+          531
+        ]
+      },
+      "finalPath": "art/final/fx/attention/amber-ripple.webp",
+      "finalDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "finalBytes": 90388,
+      "atlasRect": {
+        "x": 0,
+        "y": 512,
+        "w": 512,
+        "h": 512
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "license": "original-project-artwork"
+    },
+    {
+      "id": "fx.violet-swirl",
+      "title": "Ожидание",
+      "alt": "Фиолетовая дуга световых частиц",
+      "sourcePath": "art/source/fx/loading/violet-swirl.png",
+      "sourceSheetCrop": [
+        627,
+        627,
+        1254,
+        1254
+      ],
+      "sourceMetrics": {
+        "width": 627,
+        "height": 627,
+        "alpha": true,
+        "alphaExtrema": [
+          0,
+          253
+        ],
+        "alphaBounds": [
+          106,
+          77,
+          547,
+          481
+        ]
+      },
+      "finalPath": "art/final/fx/loading/violet-swirl.webp",
+      "finalDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "finalBytes": 61852,
+      "atlasRect": {
+        "x": 512,
+        "y": 512,
+        "w": 512,
+        "h": 512
+      },
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "license": "original-project-artwork"
+    }
+  ],
+  "reducedMotion": "Each separate sprite is itself the reduced-motion still. Any future animation is an optional UI layer.",
+  "atlasPath": "art/final/fx/particles/atlas.png",
+  "atlasDimensions": {
+    "width": 1024,
+    "height": 1024
+  }
+}

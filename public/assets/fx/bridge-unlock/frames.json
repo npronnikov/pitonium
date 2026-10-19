@@ -1,0 +1,123 @@
+{
+  "id": "fx.bridge-unlock",
+  "sourcePromptId": "REW-02",
+  "kind": "generated-style-frames",
+  "frames": [
+    {
+      "id": "frame-01-dark",
+      "title": "Мост до открытия",
+      "alt": "Мост до открытия",
+      "sourcePath": "art/source/fx/bridge-unlock/frame-01-dark.png",
+      "sourceSheetCrop": [
+        0,
+        0,
+        724,
+        724
+      ],
+      "sourceMetrics": {
+        "width": 724,
+        "height": 724,
+        "alpha": true,
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "alphaBounds": [
+          8,
+          61,
+          722,
+          635
+        ]
+      },
+      "finalPath": "art/final/fx/bridge-unlock/frame-01-dark.webp",
+      "finalDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "finalBytes": 51998,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.65
+      },
+      "license": "original-project-artwork"
+    },
+    {
+      "id": "frame-02-unlocking",
+      "title": "Свет проходит по мосту",
+      "alt": "Свет проходит по мосту",
+      "sourcePath": "art/source/fx/bridge-unlock/frame-02-unlocking.png",
+      "sourceSheetCrop": [
+        724,
+        0,
+        1448,
+        724
+      ],
+      "sourceMetrics": {
+        "width": 724,
+        "height": 724,
+        "alpha": true,
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "alphaBounds": [
+          1,
+          67,
+          717,
+          637
+        ]
+      },
+      "finalPath": "art/final/fx/bridge-unlock/frame-02-unlocking.webp",
+      "finalDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "finalBytes": 58746,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.65
+      },
+      "license": "original-project-artwork"
+    },
+    {
+      "id": "frame-03-lit",
+      "title": "Мост открыт",
+      "alt": "Мост открыт",
+      "sourcePath": "art/source/fx/bridge-unlock/frame-03-lit.png",
+      "sourceSheetCrop": [
+        1448,
+        0,
+        2172,
+        724
+      ],
+      "sourceMetrics": {
+        "width": 724,
+        "height": 724,
+        "alpha": true,
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "alphaBounds": [
+          4,
+          66,
+          723,
+          637
+        ]
+      },
+      "finalPath": "art/final/fx/bridge-unlock/frame-03-lit.webp",
+      "finalDimensions": {
+        "width": 512,
+        "height": 512
+      },
+      "finalBytes": 62494,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.65
+      },
+      "license": "original-project-artwork"
+    }
+  ],
+  "reducedMotionFallback": "frame-03-lit",
+  "geometryNote": "Three separate generated style keyframes have similar bridge geometry and matching camera, but exact pixel identity is not asserted. They are source art for a gentle manual lighting transition, not a guaranteed deformation-free animated sprite atlas."
+}

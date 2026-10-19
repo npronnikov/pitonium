@@ -1,0 +1,6265 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "PITON V5 domain API",
+    "version": "5.0.0",
+    "description": "One Web Request handler shared by local Node 24 SQLite and private Sites/D1. Authentication, ownership, XP ledger, drafts, projects and mastery are server-owned. Python grading authority is explicitly browser-preview in this P0 implementation. Full shared application types live in packages/contracts/index.ts; runtime protocol in packages/runtime/contracts.ts."
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "Current same-origin API"
+    }
+  ],
+  "security": [
+    {
+      "sessionCookie": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "healthDefault",
+        "summary": "Check API availability",
+        "description": "Verifies that the migrated users table can be queried.",
+        "tags": [
+          "health"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": []
+      }
+    },
+    "/health/live": {
+      "get": {
+        "operationId": "healthLive",
+        "summary": "Check API availability",
+        "description": "Process-only liveness; no database read.",
+        "tags": [
+          "health"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": []
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "operationId": "healthReady",
+        "summary": "Check API availability",
+        "description": "Verifies that the migrated users table can be queried.",
+        "tags": [
+          "health"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "authMe",
+        "summary": "Read current account, profiles and CSRF token",
+        "description": "Local mode can return an anonymous AuthState. Hosted mode requires trusted Sites identity and initializes its private three-profile account once. Local mode ignores oai-* headers.",
+        "tags": [
+          "auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthState"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/demo": {
+      "post": {
+        "operationId": "authDemo",
+        "summary": "Open an isolated demo account",
+        "description": "Local mode creates a new UUID owner with Аня/Марк/Лера and zero progress. Hosted mode returns the already trusted platform account; it does not replace it.",
+        "tags": [
+          "auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthState"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          }
+        ],
+        "security": []
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "authRegister",
+        "summary": "Register a local account",
+        "description": "Local only. Upgrades the current demo owner without changing profile IDs, XP, drafts or projects, rotates every old owner session; otherwise creates one initial profile. Same-origin Origin is mandatory.",
+        "tags": [
+          "auth"
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthState"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Register"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "authLogin",
+        "summary": "Sign in with local email/password",
+        "description": "Sign in with local email/password",
+        "tags": [
+          "auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthState"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "authLogout",
+        "summary": "Revoke the application session",
+        "description": "Clears the app cookie. Hosted ChatGPT identity is external; use the platform sign-out link to sign out of ChatGPT.",
+        "tags": [
+          "auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthState"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ]
+      }
+    },
+    "/profiles": {
+      "get": {
+        "operationId": "profilesList",
+        "summary": "List owned profiles",
+        "description": "List owned profiles",
+        "tags": [
+          "profiles"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "profiles": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Profile"
+                      }
+                    },
+                    "activeProfileId": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "description": "Opaque server ID or canonical curriculum ID.",
+                          "minLength": 1,
+                          "maxLength": 120
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "profiles",
+                    "activeProfileId"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "post": {
+        "operationId": "profilesCreate",
+        "summary": "Create an owned profile",
+        "description": "At most ten profiles per owner; userId is always assigned by the server.",
+        "tags": [
+          "profiles"
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileCreate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/{profileId}": {
+      "get": {
+        "operationId": "profilesRead",
+        "summary": "Read one owned profile",
+        "description": "Read one owned profile",
+        "tags": [
+          "profiles"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "profileId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "profilesUpdate",
+        "summary": "Edit profile preferences",
+        "description": "Edit profile preferences",
+        "tags": [
+          "profiles"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "profileId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfilePatch"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "profilesDelete",
+        "summary": "Delete a profile and its private data",
+        "description": "Cascades drafts, projects/revisions, submissions/XP, mastery, reviews, story flags and tutor replies. The final owned profile cannot be deleted.",
+        "tags": [
+          "profiles"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "profileId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ]
+      }
+    },
+    "/profiles/{profileId}/activate": {
+      "post": {
+        "operationId": "profilesActivate",
+        "summary": "Select the current profile for this session",
+        "description": "Select the current profile for this session",
+        "tags": [
+          "profiles"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthState"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "profileId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ]
+      }
+    },
+    "/profiles/{profileId}/export": {
+      "get": {
+        "operationId": "profilesExport",
+        "summary": "Download a private profile JSON export",
+        "description": "Download a private profile JSON export",
+        "tags": [
+          "profiles"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "format:'piton-profile-export', version:1, profile, progress, drafts, projects, last ten revisions per project, submissions, skillEvidence, tutorMessages. Credentials and sessions excluded."
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "profileId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          }
+        ]
+      }
+    },
+    "/worlds": {
+      "get": {
+        "operationId": "worldsList",
+        "summary": "Get the six worlds with server-derived progress",
+        "description": "Completion uses available authored cores. totalCount includes the full planned catalog; availableCount states the actual authored count. u5-l2 remains directly accessible as the guided demonstration.",
+        "tags": [
+          "worlds"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "worlds": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WorldProgress"
+                      }
+                    }
+                  },
+                  "required": [
+                    "worlds"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "description": "Owned profile; defaults to session.activeProfileId."
+          }
+        ]
+      }
+    },
+    "/lessons": {
+      "get": {
+        "operationId": "lessonsList",
+        "summary": "Get the full catalog with honest availability",
+        "description": "Get the full catalog with honest availability",
+        "tags": [
+          "lessons"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "catalog": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CatalogLesson"
+                      }
+                    }
+                  },
+                  "required": [
+                    "catalog"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "description": "Owned profile; defaults to session.activeProfileId."
+          }
+        ]
+      }
+    },
+    "/lessons/{lessonId}": {
+      "get": {
+        "operationId": "lessonsRead",
+        "summary": "Get a lesson core, selected variant and access reason",
+        "description": "GET normalizes u05-l02 to u5-l2. Submit the returned canonical IDs. Solutions and tests are public P0 content; UI controls revelation.",
+        "tags": [
+          "lessons"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "lesson": {
+                      "$ref": "#/components/schemas/LessonCore"
+                    },
+                    "variant": {
+                      "$ref": "#/components/schemas/LessonVariant"
+                    },
+                    "locked": {
+                      "type": "boolean"
+                    },
+                    "reason": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "missingPrerequisites": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "description": "Opaque server ID or canonical curriculum ID.",
+                        "minLength": 1,
+                        "maxLength": 120
+                      }
+                    },
+                    "recommendedPrerequisites": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "description": "Opaque server ID or canonical curriculum ID.",
+                        "minLength": 1,
+                        "maxLength": 120
+                      }
+                    }
+                  },
+                  "required": [
+                    "lesson",
+                    "variant",
+                    "locked",
+                    "reason",
+                    "missingPrerequisites",
+                    "recommendedPrerequisites"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lessonId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "description": "Owned profile; defaults to session.activeProfileId."
+          },
+          {
+            "in": "query",
+            "name": "mode",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "child",
+                "teen",
+                "adult"
+              ]
+            },
+            "description": "Defaults to the selected profile mode."
+          }
+        ]
+      }
+    },
+    "/missions": {
+      "get": {
+        "operationId": "missionsList",
+        "summary": "Get practice missions and availability",
+        "description": "Available standalone mission IDs can be used for drafts/projects. Missions do not currently award lesson XP.",
+        "tags": [
+          "missions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "missions": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Mission"
+                      }
+                    }
+                  },
+                  "required": [
+                    "missions"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "description": "Owned profile; defaults to session.activeProfileId."
+          }
+        ]
+      }
+    },
+    "/skills": {
+      "get": {
+        "operationId": "skillsList",
+        "summary": "Get curriculum skills and current mastery",
+        "description": "Get curriculum skills and current mastery",
+        "tags": [
+          "skills"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "skills": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Skill"
+                      }
+                    },
+                    "mastery": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SkillMastery"
+                      }
+                    }
+                  },
+                  "required": [
+                    "skills",
+                    "mastery"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "description": "Owned profile; defaults to session.activeProfileId."
+          }
+        ]
+      }
+    },
+    "/progress": {
+      "get": {
+        "operationId": "progressRead",
+        "summary": "Get progress without deriving it from browser storage",
+        "description": "Get progress without deriving it from browser storage",
+        "tags": [
+          "progress"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "description": "Owned profile; defaults to session.activeProfileId."
+          }
+        ]
+      }
+    },
+    "/progress/review": {
+      "get": {
+        "operationId": "reviewList",
+        "summary": "Get due and scheduled reviews",
+        "description": "Get due and scheduled reviews",
+        "tags": [
+          "progress"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reviews": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ReviewItem"
+                      }
+                    },
+                    "scheduled": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ReviewItem"
+                      }
+                    }
+                  },
+                  "required": [
+                    "reviews",
+                    "scheduled"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "description": "Owned profile; defaults to session.activeProfileId."
+          }
+        ]
+      },
+      "post": {
+        "operationId": "reviewAcknowledge",
+        "summary": "Acknowledge a successful due Python check",
+        "description": "Requires owned accepted skill evidence recorded after that skill became due, at most 24 hours old. It does not create evidence or award XP. Repeated acknowledgments are harmless.",
+        "tags": [
+          "progress"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reviewed": {
+                      "const": true
+                    },
+                    "skillId": {
+                      "type": "string",
+                      "description": "Opaque server ID or canonical curriculum ID.",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "submissionId": {
+                      "type": "string",
+                      "description": "Opaque server ID or canonical curriculum ID.",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "progress": {
+                      "$ref": "#/components/schemas/ProgressSummary"
+                    }
+                  },
+                  "required": [
+                    "reviewed",
+                    "skillId",
+                    "submissionId",
+                    "progress"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review": {
+      "get": {
+        "operationId": "reviewAliasList",
+        "summary": "Get due and scheduled reviews",
+        "description": "Get due and scheduled reviews",
+        "tags": [
+          "review"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reviews": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ReviewItem"
+                      }
+                    },
+                    "scheduled": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ReviewItem"
+                      }
+                    }
+                  },
+                  "required": [
+                    "reviews",
+                    "scheduled"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "description": "Owned profile; defaults to session.activeProfileId."
+          }
+        ]
+      },
+      "post": {
+        "operationId": "reviewAliasAcknowledge",
+        "summary": "Acknowledge a successful due Python check",
+        "description": "Requires owned accepted skill evidence recorded after that skill became due, at most 24 hours old. It does not create evidence or award XP. Repeated acknowledgments are harmless.",
+        "tags": [
+          "review"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reviewed": {
+                      "const": true
+                    },
+                    "skillId": {
+                      "type": "string",
+                      "description": "Opaque server ID or canonical curriculum ID.",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "submissionId": {
+                      "type": "string",
+                      "description": "Opaque server ID or canonical curriculum ID.",
+                      "minLength": 1,
+                      "maxLength": 120
+                    },
+                    "progress": {
+                      "$ref": "#/components/schemas/ProgressSummary"
+                    }
+                  },
+                  "required": [
+                    "reviewed",
+                    "skillId",
+                    "submissionId",
+                    "progress"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/submissions": {
+      "post": {
+        "operationId": "submissionsCreate",
+        "summary": "Save a complete browser check and apply domain progression",
+        "description": "P0 browser-preview evidence, not server Python grading. Validates canonical profile/core/variant, current content/assessment/runtime versions, check operation, complete exact unique test ID set, overall status/error and every passed/status. XP derives from curriculum once per profile+core, regardless of mode. Identical idempotent retries return duplicate:true and zero new XP; key/body conflicts or runId reuse fail with 409. Invalid evidence never creates an attempt. Valid failed checks create attempt/skill evidence without XP. Reflection/hints affect mastery only.",
+        "tags": [
+          "submissions"
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmissionReply"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "submissionsList",
+        "summary": "List the most recent 100 owned attempts",
+        "description": "List the most recent 100 owned attempts",
+        "tags": [
+          "submissions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "submissions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Opaque server ID or canonical curriculum ID.",
+                            "minLength": 1,
+                            "maxLength": 120
+                          },
+                          "lessonId": {
+                            "type": "string",
+                            "description": "Opaque server ID or canonical curriculum ID.",
+                            "minLength": 1,
+                            "maxLength": 120
+                          },
+                          "mode": {
+                            "type": "string",
+                            "enum": [
+                              "child",
+                              "teen",
+                              "adult"
+                            ]
+                          },
+                          "accepted": {
+                            "type": "boolean"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "gradingAuthority": {
+                            "const": "browser-preview"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "lessonId",
+                          "mode",
+                          "accepted",
+                          "createdAt",
+                          "gradingAuthority"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "submissions"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "description": "Owned profile; defaults to session.activeProfileId."
+          }
+        ]
+      }
+    },
+    "/drafts/{lessonId}": {
+      "get": {
+        "operationId": "draftsRead",
+        "summary": "Read a profile/lesson/mode draft",
+        "description": "lessonId can also be an available standalone mission ID. Each mode has its own draft; no draft returns JSON null.",
+        "tags": [
+          "drafts"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/Draft"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lessonId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "description": "Owned profile; defaults to session.activeProfileId."
+          },
+          {
+            "in": "query",
+            "name": "mode",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "child",
+                "teen",
+                "adult"
+              ]
+            },
+            "description": "Defaults to the selected profile mode."
+          }
+        ]
+      },
+      "put": {
+        "operationId": "draftsWrite",
+        "summary": "Save a draft with compare-and-swap",
+        "description": "expectedRevision=0 creates revision 1. Existing writes must match current revision. Conflict 409 includes details.current; do not overwrite it blindly.",
+        "tags": [
+          "drafts"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Draft"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lessonId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DraftPut"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "operationId": "projectsList",
+        "summary": "List projects in an owned profile",
+        "description": "List projects in an owned profile",
+        "tags": [
+          "projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "projects": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Project"
+                      }
+                    }
+                  },
+                  "required": [
+                    "projects"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "description": "Owned profile; defaults to session.activeProfileId."
+          }
+        ]
+      },
+      "post": {
+        "operationId": "projectsCreate",
+        "summary": "Save a lesson or mission as a project",
+        "description": "Creates revision 1. At most 100 projects per profile. Files are private JSON records, never server filesystem paths.",
+        "tags": [
+          "projects"
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectCreate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}": {
+      "get": {
+        "operationId": "projectsRead",
+        "summary": "Read an owned project",
+        "description": "If profileId is supplied, it must match the project's owned profile.",
+        "tags": [
+          "projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "description": "Owned profile; defaults to session.activeProfileId."
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "projectsUpdate",
+        "summary": "Save a new project revision",
+        "description": "Requires expectedRevision; keeps only the newest ten snapshots, including the current head.",
+        "tags": [
+          "projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPatch"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "projectsUpdateAlias",
+        "summary": "Save a new project revision",
+        "description": "Requires expectedRevision; keeps only the newest ten snapshots, including the current head.",
+        "tags": [
+          "projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPatch"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "projectsDelete",
+        "summary": "Delete a project and every revision",
+        "description": "Delete a project and every revision",
+        "tags": [
+          "projects"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/revisions": {
+      "get": {
+        "operationId": "projectsRevisions",
+        "summary": "Read up to ten latest project revisions",
+        "description": "Read up to ten latest project revisions",
+        "tags": [
+          "projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "revisions": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ProjectRevision"
+                      },
+                      "maxItems": 10
+                    }
+                  },
+                  "required": [
+                    "revisions"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/restore": {
+      "post": {
+        "operationId": "projectsRestore",
+        "summary": "Restore a retained revision as a new head",
+        "description": "Source revision must be in the retained latest ten. Restoring creates currentRevision+1; it never rewinds the revision counter.",
+        "tags": [
+          "projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectRestore"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tutor/messages": {
+      "get": {
+        "operationId": "tutorHistory",
+        "summary": "Read the latest 50 persisted tutor replies",
+        "description": "Replies are returned in chronological order. This is assistant reply history, not stored user-code transcripts.",
+        "tags": [
+          "tutor"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "messages": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TutorReply"
+                      },
+                      "maxItems": 50
+                    }
+                  },
+                  "required": [
+                    "messages"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "description": "Owned profile; defaults to session.activeProfileId."
+          },
+          {
+            "in": "query",
+            "name": "mode",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "child",
+                "teen",
+                "adult"
+              ]
+            },
+            "description": "Defaults to the selected profile mode."
+          },
+          {
+            "in": "query",
+            "name": "lessonId",
+            "schema": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "required": false
+          }
+        ]
+      },
+      "post": {
+        "operationId": "tutorCreate",
+        "summary": "Ask for one of four hint levels",
+        "description": "Level 4 requires revealSolution:true. With no configured provider, invalid output or provider failure, authored static hints are returned with provider:'static'. Code and traceback are forwarded only when shareCode:true. The browser cannot set provider endpoints, system prompts or secrets.",
+        "tags": [
+          "tutor"
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TutorReply"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "415": {
+            "$ref": "#/components/responses/Error"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Automatically supplied by a browser write request."
+          },
+          {
+            "in": "header",
+            "name": "X-CSRF-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token returned by auth/me; browser also sends same-origin Origin."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TutorRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worlds/{worldId}": {
+      "get": {
+        "operationId": "worldsRead",
+        "summary": "Read one world and its honest lesson nodes with access",
+        "tags": [
+          "worlds"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "worldId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "world": {
+                      "$ref": "#/components/schemas/WorldProgress"
+                    },
+                    "nodes": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CatalogLesson"
+                      }
+                    }
+                  },
+                  "required": [
+                    "world",
+                    "nodes"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/skills/{skillId}": {
+      "get": {
+        "operationId": "skillsRead",
+        "summary": "Read one skill and owned-profile mastery",
+        "tags": [
+          "skills"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "skillId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "profileId",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "skill": {
+                      "$ref": "#/components/schemas/Skill"
+                    },
+                    "mastery": {
+                      "$ref": "#/components/schemas/SkillMastery"
+                    }
+                  },
+                  "required": [
+                    "skill",
+                    "mastery"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "piton_session",
+        "description": "Random HttpOnly app session cookie; database stores its SHA-256 only. Hosted requests additionally require trusted Sites identity on every request."
+      }
+    },
+    "schemas": {
+      "Id": {
+        "type": "string",
+        "description": "Opaque server ID or canonical curriculum ID.",
+        "minLength": 1,
+        "maxLength": 120
+      },
+      "LearningMode": {
+        "type": "string",
+        "enum": [
+          "child",
+          "teen",
+          "adult"
+        ]
+      },
+      "JsonValue": {
+        "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "string",
+            "maxLength": 100000
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "maxItems": 1000
+          },
+          {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            }
+          }
+        ]
+      },
+      "JsonObject": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/JsonValue"
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "details": {},
+              "requestId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "additionalProperties": false
+      },
+      "Profile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120,
+            "readOnly": true
+          },
+          "userId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120,
+            "readOnly": true
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "ageBand": {
+            "type": "string",
+            "enum": [
+              "7-11",
+              "12-17",
+              "18+",
+              "unspecified"
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "child",
+              "teen",
+              "adult"
+            ]
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "guided",
+              "independent",
+              "challenge"
+            ]
+          },
+          "avatar": {
+            "type": "string",
+            "enum": [
+              "pix",
+              "foxy",
+              "byte",
+              "luna",
+              "quasi",
+              "nova"
+            ]
+          },
+          "interests": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            },
+            "maxItems": 10
+          },
+          "pace": {
+            "type": "string",
+            "enum": [
+              "calm",
+              "regular",
+              "intensive"
+            ]
+          },
+          "accessibility": {
+            "type": "object",
+            "properties": {
+              "reducedMotion": {
+                "type": "boolean"
+              },
+              "sound": {
+                "type": "boolean"
+              },
+              "highContrast": {
+                "type": "boolean"
+              },
+              "fontScale": {
+                "type": "number",
+                "minimum": 0.9,
+                "maximum": 1.5
+              }
+            },
+            "required": [
+              "reducedMotion",
+              "sound",
+              "highContrast",
+              "fontScale"
+            ],
+            "additionalProperties": false
+          },
+          "onboarded": {
+            "type": "boolean"
+          },
+          "diagnosticScore": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "displayName",
+          "ageBand",
+          "mode",
+          "difficulty",
+          "avatar",
+          "interests",
+          "pace",
+          "accessibility",
+          "onboarded",
+          "diagnosticScore",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "ProfileCreate": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "ageBand": {
+            "type": "string",
+            "enum": [
+              "7-11",
+              "12-17",
+              "18+",
+              "unspecified"
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "child",
+              "teen",
+              "adult"
+            ]
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "guided",
+              "independent",
+              "challenge"
+            ]
+          },
+          "avatar": {
+            "type": "string",
+            "enum": [
+              "pix",
+              "foxy",
+              "byte",
+              "luna",
+              "quasi",
+              "nova"
+            ]
+          },
+          "interests": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            },
+            "maxItems": 10
+          },
+          "pace": {
+            "type": "string",
+            "enum": [
+              "calm",
+              "regular",
+              "intensive"
+            ]
+          },
+          "accessibility": {
+            "type": "object",
+            "properties": {
+              "reducedMotion": {
+                "type": "boolean"
+              },
+              "sound": {
+                "type": "boolean"
+              },
+              "highContrast": {
+                "type": "boolean"
+              },
+              "fontScale": {
+                "type": "number",
+                "minimum": 0.9,
+                "maximum": 1.5
+              }
+            },
+            "required": [
+              "reducedMotion",
+              "sound",
+              "highContrast",
+              "fontScale"
+            ],
+            "additionalProperties": false
+          },
+          "onboarded": {
+            "type": "boolean"
+          },
+          "diagnosticScore": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "displayName",
+          "mode"
+        ],
+        "additionalProperties": false
+      },
+      "ProfilePatch": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "ageBand": {
+            "type": "string",
+            "enum": [
+              "7-11",
+              "12-17",
+              "18+",
+              "unspecified"
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "child",
+              "teen",
+              "adult"
+            ]
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "guided",
+              "independent",
+              "challenge"
+            ]
+          },
+          "avatar": {
+            "type": "string",
+            "enum": [
+              "pix",
+              "foxy",
+              "byte",
+              "luna",
+              "quasi",
+              "nova"
+            ]
+          },
+          "interests": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            },
+            "maxItems": 10
+          },
+          "pace": {
+            "type": "string",
+            "enum": [
+              "calm",
+              "regular",
+              "intensive"
+            ]
+          },
+          "accessibility": {
+            "type": "object",
+            "properties": {
+              "reducedMotion": {
+                "type": "boolean"
+              },
+              "sound": {
+                "type": "boolean"
+              },
+              "highContrast": {
+                "type": "boolean"
+              },
+              "fontScale": {
+                "type": "number",
+                "minimum": 0.9,
+                "maximum": 1.5
+              }
+            },
+            "required": [
+              "reducedMotion",
+              "sound",
+              "highContrast",
+              "fontScale"
+            ],
+            "additionalProperties": false
+          },
+          "onboarded": {
+            "type": "boolean"
+          },
+          "diagnosticScore": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [],
+        "additionalProperties": false,
+        "minProperties": 1
+      },
+      "AuthState": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Opaque server ID or canonical curriculum ID.",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "email": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "email"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "isDemo": {
+                    "type": "boolean"
+                  },
+                  "authMethod": {
+                    "type": "string",
+                    "enum": [
+                      "local",
+                      "platform",
+                      "demo"
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "email",
+                  "isDemo",
+                  "authMethod"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "profiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Profile"
+            }
+          },
+          "activeProfileId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "Opaque server ID or canonical curriculum ID.",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "csrfToken": {
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "Send as X-CSRF-Token on authenticated writes."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "authMode": {
+            "type": "string",
+            "enum": [
+              "local",
+              "platform"
+            ]
+          }
+        },
+        "required": [
+          "user",
+          "profiles",
+          "activeProfileId",
+          "csrfToken",
+          "authMode"
+        ],
+        "additionalProperties": false
+      },
+      "Login": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "additionalProperties": false
+      },
+      "Register": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          },
+          "password": {
+            "type": "string",
+            "description": "At least ten characters; scrypt on the local server.",
+            "minLength": 10,
+            "maxLength": 256
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "child",
+              "teen",
+              "adult"
+            ]
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "additionalProperties": false
+      },
+      "Draft": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "lessonId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "child",
+              "teen",
+              "adult"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "profileId",
+          "lessonId",
+          "mode",
+          "code",
+          "revision",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "DraftPut": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "child",
+              "teen",
+              "adult"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483646
+          }
+        },
+        "required": [
+          "profileId",
+          "mode",
+          "code",
+          "expectedRevision"
+        ],
+        "additionalProperties": false
+      },
+      "ProjectFile": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative POSIX path; absolute paths, empty segments, . and .. are rejected.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 262144
+          }
+        },
+        "required": [
+          "path",
+          "content"
+        ],
+        "additionalProperties": false
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "profileId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "lessonId": {
+            "type": "string",
+            "description": "Canonical published LessonCore ID or available standalone mission ID."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "child",
+              "teen",
+              "adult"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Relative POSIX path; absolute paths, empty segments, . and .. are rejected.",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "content": {
+                  "type": "string",
+                  "maxLength": 262144
+                }
+              },
+              "required": [
+                "path",
+                "content"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 32,
+            "description": "Unique paths; combined UTF-8 contents at most 512 KiB."
+          },
+          "config": {
+            "$ref": "#/components/schemas/JsonObject"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "profileId",
+          "lessonId",
+          "title",
+          "mode",
+          "code",
+          "files",
+          "config",
+          "revision",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "ProjectCreate": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "lessonId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "child",
+              "teen",
+              "adult"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Relative POSIX path; absolute paths, empty segments, . and .. are rejected.",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "content": {
+                  "type": "string",
+                  "maxLength": 262144
+                }
+              },
+              "required": [
+                "path",
+                "content"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 32
+          },
+          "config": {
+            "$ref": "#/components/schemas/JsonObject"
+          }
+        },
+        "required": [
+          "profileId",
+          "lessonId",
+          "title",
+          "mode",
+          "code"
+        ],
+        "additionalProperties": false
+      },
+      "ProjectPatch": {
+        "type": "object",
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483646
+          },
+          "lessonId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "child",
+              "teen",
+              "adult"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Relative POSIX path; absolute paths, empty segments, . and .. are rejected.",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "content": {
+                  "type": "string",
+                  "maxLength": 262144
+                }
+              },
+              "required": [
+                "path",
+                "content"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 32
+          },
+          "config": {
+            "$ref": "#/components/schemas/JsonObject"
+          }
+        },
+        "required": [
+          "expectedRevision"
+        ],
+        "additionalProperties": false
+      },
+      "ProjectRestore": {
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483646
+          }
+        },
+        "required": [
+          "revision",
+          "expectedRevision"
+        ],
+        "additionalProperties": false
+      },
+      "SkillMastery": {
+        "type": "object",
+        "properties": {
+          "skillId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          },
+          "evidenceCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "lastPracticed": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "nextReviewAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "skillId",
+          "level",
+          "evidenceCount",
+          "lastPracticed",
+          "nextReviewAt"
+        ],
+        "additionalProperties": false
+      },
+      "ReviewItem": {
+        "type": "object",
+        "properties": {
+          "skillId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "lessonId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "dueAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          }
+        },
+        "required": [
+          "skillId",
+          "lessonId",
+          "dueAt",
+          "level"
+        ],
+        "additionalProperties": false
+      },
+      "ProgressSummary": {
+        "type": "object",
+        "properties": {
+          "xp": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "completedLessonIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "mastery": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkillMastery"
+            }
+          },
+          "reviews": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewItem"
+            },
+            "description": "Only currently due review items."
+          },
+          "attempts": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "storyFlags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "badges": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "first-code",
+                "practice-streak",
+                "ten-lessons",
+                "loop-mastery",
+                "function-mastery",
+                "first-bug-fixed",
+                "first-test",
+                "first-mechanic",
+                "first-report",
+                "first-world",
+                "independent-solution",
+                "creator"
+              ]
+            }
+          },
+          "streak": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "activeDays": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        },
+        "required": [
+          "xp",
+          "level",
+          "completedLessonIds",
+          "mastery",
+          "reviews",
+          "attempts",
+          "storyFlags",
+          "badges",
+          "streak",
+          "activeDays"
+        ],
+        "additionalProperties": false
+      },
+      "ReviewRequest": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "skillId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "submissionId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "profileId",
+          "skillId",
+          "submissionId"
+        ],
+        "additionalProperties": false
+      },
+      "SourceRef": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "book": {
+            "type": "string"
+          },
+          "chapter": {
+            "type": "string"
+          },
+          "topic": {
+            "type": "string"
+          },
+          "pages": {
+            "type": "string"
+          },
+          "edition": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "inherited-unverified",
+              "verified",
+              "supplemental"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "book",
+          "chapter",
+          "topic",
+          "edition",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "CatalogLesson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "title": {
+            "type": "string"
+          },
+          "worldId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "unit": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "unitTitle": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "sourceText": {
+            "type": "string"
+          },
+          "minutes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "skillIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "missingPrerequisites": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "recommendedPrerequisites": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "worldId",
+          "unit",
+          "unitTitle",
+          "order",
+          "available",
+          "sourceText",
+          "minutes",
+          "skillIds",
+          "completed",
+          "locked",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "Skill": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "prerequisites": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "misconceptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "masteryCriteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "lessonIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SourceRef"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "prerequisites",
+          "misconceptions",
+          "masteryCriteria",
+          "lessonIds",
+          "sources"
+        ],
+        "additionalProperties": false
+      },
+      "WorldProgress": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "slug": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "lessonIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "asset": {
+            "type": "string"
+          },
+          "accent": {
+            "type": "string"
+          },
+          "prerequisiteWorldId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "Opaque server ID or canonical curriculum ID.",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "locked",
+              "current",
+              "available",
+              "completed"
+            ]
+          },
+          "completedCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "availableCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "totalCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "order",
+          "title",
+          "subtitle",
+          "description",
+          "lessonIds",
+          "asset",
+          "accent",
+          "prerequisiteWorldId",
+          "status",
+          "completedCount",
+          "availableCount",
+          "totalCount",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "Question": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "correctIndex": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "explanation": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "prompt",
+          "choices",
+          "correctIndex",
+          "explanation"
+        ],
+        "additionalProperties": false
+      },
+      "ExecutionCase": {
+        "type": "object",
+        "properties": {
+          "fixtures": {
+            "type": "object",
+            "description": "Canonical runtime fixtures: globals, stdin, UTF-8 files, optional robot/arena scene.",
+            "additionalProperties": true
+          },
+          "probe": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "script"
+                  }
+                },
+                "required": [
+                  "kind"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "call"
+                  },
+                  "functionName": {
+                    "type": "string"
+                  },
+                  "args": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/JsonValue"
+                    }
+                  }
+                },
+                "required": [
+                  "kind",
+                  "functionName",
+                  "args"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "required": [
+          "fixtures",
+          "probe"
+        ],
+        "additionalProperties": false
+      },
+      "TestCase": {
+        "type": "object",
+        "properties": {
+          "fixtures": {
+            "type": "object",
+            "description": "Canonical runtime fixtures: globals, stdin, UTF-8 files, optional robot/arena scene.",
+            "additionalProperties": true
+          },
+          "probe": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "script"
+                  }
+                },
+                "required": [
+                  "kind"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "call"
+                  },
+                  "functionName": {
+                    "type": "string"
+                  },
+                  "args": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/JsonValue"
+                    }
+                  }
+                },
+                "required": [
+                  "kind",
+                  "functionName",
+                  "args"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "assertions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "Typed canonical assertion from packages/runtime/contracts.ts."
+            }
+          }
+        },
+        "required": [
+          "fixtures",
+          "probe",
+          "id",
+          "label",
+          "assertions"
+        ],
+        "additionalProperties": false
+      },
+      "LessonVariant": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "child",
+              "teen",
+              "adult"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "story": {
+            "type": "string"
+          },
+          "task": {
+            "type": "string"
+          },
+          "resultLabel": {
+            "type": "string"
+          },
+          "scene": {
+            "type": "string",
+            "enum": [
+              "robot",
+              "arena",
+              "report"
+            ]
+          },
+          "starterCode": {
+            "type": "string"
+          },
+          "exampleCode": {
+            "type": "string"
+          },
+          "solutionCode": {
+            "type": "string",
+            "description": "Public P0 content. UI displays only after explicit reveal."
+          },
+          "theory": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "title",
+                "body"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Question"
+            }
+          },
+          "reflection": {
+            "$ref": "#/components/schemas/Question"
+          },
+          "hints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "transfer": {
+            "type": "string"
+          },
+          "preview": {
+            "$ref": "#/components/schemas/ExecutionCase"
+          },
+          "tests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TestCase"
+            }
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Relative POSIX path; absolute paths, empty segments, . and .. are rejected.",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "content": {
+                  "type": "string",
+                  "maxLength": 262144
+                }
+              },
+              "required": [
+                "path",
+                "content"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "mode",
+          "title",
+          "story",
+          "task",
+          "resultLabel",
+          "scene",
+          "starterCode",
+          "exampleCode",
+          "solutionCode",
+          "theory",
+          "questions",
+          "reflection",
+          "hints",
+          "transfer",
+          "preview",
+          "tests"
+        ],
+        "additionalProperties": false
+      },
+      "LessonCore": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "title": {
+            "type": "string"
+          },
+          "worldId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "unit": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "objective": {
+            "type": "string"
+          },
+          "skillIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "prerequisites": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "minutes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "xp": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "contentVersion": {
+            "type": "string"
+          },
+          "assessmentVersion": {
+            "type": "string"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SourceRef"
+            }
+          },
+          "variants": {
+            "type": "object",
+            "properties": {
+              "child": {
+                "$ref": "#/components/schemas/LessonVariant"
+              },
+              "teen": {
+                "$ref": "#/components/schemas/LessonVariant"
+              },
+              "adult": {
+                "$ref": "#/components/schemas/LessonVariant"
+              }
+            },
+            "required": [
+              "child",
+              "teen",
+              "adult"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "worldId",
+          "unit",
+          "order",
+          "objective",
+          "skillIds",
+          "prerequisites",
+          "minutes",
+          "xp",
+          "contentVersion",
+          "assessmentVersion",
+          "sources",
+          "variants"
+        ],
+        "additionalProperties": false
+      },
+      "Mission": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "title": {
+            "type": "string"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "start",
+              "practice",
+              "challenge"
+            ]
+          },
+          "sourceText": {
+            "type": "string"
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "lessonId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "description": {
+            "type": "string"
+          },
+          "skillIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Opaque server ID or canonical curriculum ID.",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          "starterCode": {
+            "type": "string"
+          },
+          "solutionCode": {
+            "type": "string"
+          },
+          "preview": {
+            "$ref": "#/components/schemas/ExecutionCase"
+          },
+          "tests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TestCase"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "difficulty",
+          "sourceText",
+          "available",
+          "description",
+          "skillIds"
+        ],
+        "additionalProperties": false
+      },
+      "RunContext": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "lessonId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "variantId": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "draftVersion": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "testsVersion": {
+            "type": "string",
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "profileId",
+          "lessonId",
+          "variantId",
+          "draftVersion",
+          "testsVersion"
+        ],
+        "additionalProperties": false
+      },
+      "RunStatus": {
+        "type": "string",
+        "enum": [
+          "ok",
+          "error",
+          "timeout",
+          "cancelled"
+        ]
+      },
+      "TestResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "status": {
+            "$ref": "#/components/schemas/RunStatus"
+          },
+          "elapsedMs": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 600000
+          },
+          "diagnostics": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "expected": {
+                  "$ref": "#/components/schemas/JsonValue"
+                },
+                "actual": {
+                  "$ref": "#/components/schemas/JsonValue"
+                }
+              },
+              "required": [
+                "category",
+                "message"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 40
+          }
+        },
+        "required": [
+          "id",
+          "passed",
+          "status",
+          "elapsedMs",
+          "diagnostics"
+        ],
+        "additionalProperties": false
+      },
+      "RuntimeError": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "line": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "traceback": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "message",
+          "line",
+          "traceback",
+          "category"
+        ],
+        "additionalProperties": false
+      },
+      "TutorReply": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "message": {
+            "type": "string"
+          },
+          "hintLevel": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "static",
+              "provider"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "message",
+          "hintLevel",
+          "provider",
+          "createdAt"
+        ],
+        "additionalProperties": false
+      },
+      "TutorRequest": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "lessonId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "child",
+              "teen",
+              "adult"
+            ]
+          },
+          "hintLevel": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "shareCode": {
+            "type": "boolean",
+            "default": false
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "error": {
+            "type": "string",
+            "maxLength": 8192
+          },
+          "revealSolution": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "profileId",
+          "lessonId",
+          "mode",
+          "hintLevel"
+        ],
+        "additionalProperties": false
+      },
+      "Health": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "ok"
+          },
+          "service": {
+            "const": "piton-api"
+          },
+          "version": {
+            "const": "5.0.0"
+          },
+          "database": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "unchecked"
+            ]
+          },
+          "authMode": {
+            "type": "string",
+            "enum": [
+              "local",
+              "platform"
+            ]
+          },
+          "runtimeVersion": {
+            "const": "pyodide-314.0.7"
+          },
+          "gradingAuthority": {
+            "const": "browser-preview"
+          }
+        },
+        "required": [
+          "status",
+          "service",
+          "version",
+          "database",
+          "authMode",
+          "runtimeVersion",
+          "gradingAuthority"
+        ],
+        "additionalProperties": false
+      },
+      "ProjectRevision": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "profileId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "lessonId": {
+            "type": "string",
+            "description": "Canonical published LessonCore ID or available standalone mission ID."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "child",
+              "teen",
+              "adult"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Relative POSIX path; absolute paths, empty segments, . and .. are rejected.",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "content": {
+                  "type": "string",
+                  "maxLength": 262144
+                }
+              },
+              "required": [
+                "path",
+                "content"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 32,
+            "description": "Unique paths; combined UTF-8 contents at most 512 KiB."
+          },
+          "config": {
+            "$ref": "#/components/schemas/JsonObject"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "revisionId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "id",
+          "profileId",
+          "lessonId",
+          "title",
+          "mode",
+          "code",
+          "files",
+          "config",
+          "revision",
+          "createdAt",
+          "updatedAt",
+          "revisionId"
+        ],
+        "additionalProperties": false
+      },
+      "GameEvent": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4096
+              },
+              "type": {
+                "const": "actor.move"
+              },
+              "actorId": {
+                "type": "string"
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "dx": {
+                    "type": "integer",
+                    "minimum": -1,
+                    "maximum": 1
+                  },
+                  "dy": {
+                    "type": "integer",
+                    "minimum": -1,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "dx",
+                  "dy"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "index",
+              "type",
+              "actorId",
+              "payload"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4096
+              },
+              "type": {
+                "const": "actor.turn"
+              },
+              "actorId": {
+                "type": "string"
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "direction": {
+                    "type": "string",
+                    "enum": [
+                      "east",
+                      "south",
+                      "west",
+                      "north"
+                    ]
+                  }
+                },
+                "required": [
+                  "direction"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "index",
+              "type",
+              "actorId",
+              "payload"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4096
+              },
+              "type": {
+                "const": "actor.say"
+              },
+              "actorId": {
+                "type": "string"
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "Plain text; no HTML or external URLs.",
+                    "maxLength": 400
+                  }
+                },
+                "required": [
+                  "text"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "index",
+              "type",
+              "actorId",
+              "payload"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4096
+              },
+              "type": {
+                "const": "item.collect"
+              },
+              "actorId": {
+                "type": "string"
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "itemId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "itemId"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "index",
+              "type",
+              "actorId",
+              "payload"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4096
+              },
+              "type": {
+                "const": "enemy.spawn"
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string"
+                  },
+                  "x": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 4096
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 4096
+                  }
+                },
+                "required": [
+                  "kind",
+                  "x",
+                  "y"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "index",
+              "type",
+              "payload"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4096
+              },
+              "type": {
+                "const": "score.update"
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "minimum": -1000000000,
+                    "maximum": 1000000000
+                  }
+                },
+                "required": [
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "index",
+              "type",
+              "payload"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4096
+              },
+              "type": {
+                "const": "gate.open"
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "gateId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "gateId"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "index",
+              "type",
+              "payload"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "index": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4096
+              },
+              "type": {
+                "const": "scene.complete"
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "success"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "index",
+              "type",
+              "payload"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "RunResult": {
+        "type": "object",
+        "properties": {
+          "protocolVersion": {
+            "const": "1"
+          },
+          "runtimeVersion": {
+            "const": "pyodide-314.0.7"
+          },
+          "runId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "context": {
+            "$ref": "#/components/schemas/RunContext"
+          },
+          "operation": {
+            "type": "string",
+            "enum": [
+              "preview",
+              "check"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/RunStatus"
+          },
+          "phase": {
+            "const": "complete"
+          },
+          "stdout": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "stderr": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RuntimeError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameEvent"
+            },
+            "maxItems": 512
+          },
+          "trace": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "line": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "locals": {
+                  "$ref": "#/components/schemas/JsonObject"
+                },
+                "eventIndex": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "line",
+                "locals",
+                "eventIndex"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 300
+          },
+          "returnValue": {
+            "$ref": "#/components/schemas/JsonValue"
+          },
+          "testResults": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TestResult"
+            },
+            "maxItems": 20
+          },
+          "dataFiles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Relative POSIX path; absolute paths, empty segments, . and .. are rejected.",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "content": {
+                  "type": "string",
+                  "maxLength": 524288
+                },
+                "encoding": {
+                  "const": "utf8"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 524288
+                }
+              },
+              "required": [
+                "path",
+                "content",
+                "encoding",
+                "bytes"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 32
+          },
+          "elapsedMs": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 600000
+          },
+          "truncated": {
+            "type": "object",
+            "properties": {
+              "stdout": {
+                "type": "boolean"
+              },
+              "events": {
+                "type": "boolean"
+              },
+              "trace": {
+                "type": "boolean"
+              },
+              "files": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "stdout",
+              "events",
+              "trace",
+              "files"
+            ],
+            "additionalProperties": false
+          },
+          "gradingAuthority": {
+            "const": "browser-preview"
+          }
+        },
+        "required": [
+          "protocolVersion",
+          "runtimeVersion",
+          "runId",
+          "context",
+          "operation",
+          "status",
+          "phase",
+          "stdout",
+          "stderr",
+          "error",
+          "events",
+          "trace",
+          "testResults",
+          "dataFiles",
+          "elapsedMs",
+          "truncated",
+          "gradingAuthority"
+        ],
+        "additionalProperties": false
+      },
+      "SubmissionRequest": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "lessonId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "child",
+              "teen",
+              "adult"
+            ]
+          },
+          "variantId": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "contentVersion": {
+            "type": "string"
+          },
+          "assessmentVersion": {
+            "type": "string"
+          },
+          "runtimeVersion": {
+            "const": "pyodide-314.0.7"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "description": "Unique per profile, 8..120 characters. Reuse the same key and body for a network retry.",
+            "minLength": 8,
+            "maxLength": 120,
+            "pattern": "^[a-zA-Z0-9_:-]+$"
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "hintLevel": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          },
+          "reflectionCorrect": {
+            "type": "boolean"
+          },
+          "result": {
+            "$ref": "#/components/schemas/RunResult"
+          }
+        },
+        "required": [
+          "profileId",
+          "lessonId",
+          "mode",
+          "variantId",
+          "contentVersion",
+          "assessmentVersion",
+          "runtimeVersion",
+          "idempotencyKey",
+          "result"
+        ],
+        "additionalProperties": false
+      },
+      "SubmissionReply": {
+        "type": "object",
+        "properties": {
+          "submissionId": {
+            "type": "string",
+            "description": "Opaque server ID or canonical curriculum ID.",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "accepted": {
+            "type": "boolean"
+          },
+          "xpAwarded": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "duplicate": {
+            "type": "boolean"
+          },
+          "progress": {
+            "$ref": "#/components/schemas/ProgressSummary"
+          },
+          "gradingAuthority": {
+            "const": "browser-preview"
+          }
+        },
+        "required": [
+          "submissionId",
+          "accepted",
+          "xpAwarded",
+          "duplicate",
+          "progress",
+          "gradingAuthority"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "responses": {
+      "Error": {
+        "description": "Structured error; no stack, credential or private foreign-profile details.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-runtime-version": "pyodide-314.0.7",
+  "x-grading-authority": "browser-preview",
+  "x-request-body-limit-bytes": 2097152,
+  "x-mastery-scale": {
+    "0": "unfamiliar",
+    "1": "attempted",
+    "2": "succeeded with support or without confirmed reflection",
+    "3": "unassisted success plus reflection",
+    "4": "independent transfer plus due delayed practice"
+  }
+}

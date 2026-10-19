@@ -1,0 +1,11 @@
+{
+  "format": "piton-portable-source",
+  "version": "5.0.0",
+  "generatedAt": "2026-10-18T20:18:15.258Z",
+  "node": "24",
+  "packageManager": "npm",
+  "lockSha256": "6a99697d516175c15e6b81752456df3026a11d44f56acd5db342a5bb6f60b396",
+  "graphics": "design/asset-manifest.json",
+  "includesUserDatabase": false,
+  "gradingAuthority": "browser-preview"
+}

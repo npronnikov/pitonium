@@ -1,0 +1,299 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://piton.local/schemas/scene-events-v1.json",
+  "title": "PITON game events v1",
+  "type": "array",
+  "maxItems": 512,
+  "items": {
+    "oneOf": [
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "index",
+          "type",
+          "actorId",
+          "payload"
+        ],
+        "properties": {
+          "index": {
+            "$ref": "#/$defs/index"
+          },
+          "type": {
+            "const": "actor.move"
+          },
+          "actorId": {
+            "$ref": "#/$defs/id"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "dx",
+              "dy"
+            ],
+            "properties": {
+              "dx": {
+                "type": "integer",
+                "minimum": -1,
+                "maximum": 1
+              },
+              "dy": {
+                "type": "integer",
+                "minimum": -1,
+                "maximum": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "index",
+          "type",
+          "actorId",
+          "payload"
+        ],
+        "properties": {
+          "index": {
+            "$ref": "#/$defs/index"
+          },
+          "type": {
+            "const": "actor.turn"
+          },
+          "actorId": {
+            "$ref": "#/$defs/id"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "direction"
+            ],
+            "properties": {
+              "direction": {
+                "enum": [
+                  "east",
+                  "south",
+                  "west",
+                  "north"
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "index",
+          "type",
+          "actorId",
+          "payload"
+        ],
+        "properties": {
+          "index": {
+            "$ref": "#/$defs/index"
+          },
+          "type": {
+            "const": "actor.say"
+          },
+          "actorId": {
+            "$ref": "#/$defs/id"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "string",
+                "maxLength": 400,
+                "pattern": "^(?![\\s\\S]*[<>])(?![\\s\\S]*(?:[hH][tT][tT][pP][sS]?:|[jJ][aA][vV][aA][sS][cC][rR][iI][pP][tT]:|[dD][aA][tT][aA]:))[\\s\\S]*$"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "index",
+          "type",
+          "actorId",
+          "payload"
+        ],
+        "properties": {
+          "index": {
+            "$ref": "#/$defs/index"
+          },
+          "type": {
+            "const": "item.collect"
+          },
+          "actorId": {
+            "$ref": "#/$defs/id"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "itemId"
+            ],
+            "properties": {
+              "itemId": {
+                "$ref": "#/$defs/id"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "index",
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "index": {
+            "$ref": "#/$defs/index"
+          },
+          "type": {
+            "const": "enemy.spawn"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "x",
+              "y"
+            ],
+            "properties": {
+              "kind": {
+                "$ref": "#/$defs/id"
+              },
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 4096
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 4096
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "index",
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "index": {
+            "$ref": "#/$defs/index"
+          },
+          "type": {
+            "const": "score.update"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": -1000000000,
+                "maximum": 1000000000
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "index",
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "index": {
+            "$ref": "#/$defs/index"
+          },
+          "type": {
+            "const": "gate.open"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "gateId"
+            ],
+            "properties": {
+              "gateId": {
+                "$ref": "#/$defs/id"
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "index",
+          "type",
+          "payload"
+        ],
+        "properties": {
+          "index": {
+            "$ref": "#/$defs/index"
+          },
+          "type": {
+            "const": "scene.complete"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "success"
+            ],
+            "properties": {
+              "success": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "$defs": {
+    "index": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4096
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9_-]{0,63}$"
+    }
+  }
+}

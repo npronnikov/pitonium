@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `identity_provider_user` ON `auth_identities` (`provider`,`user_id`);

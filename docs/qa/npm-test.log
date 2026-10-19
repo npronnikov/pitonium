@@ -1,0 +1,27 @@
+Command: npm test
+Working directory: /workspace/scratch/6a45c6d6fea4/portable-verify
+Runtime: Node v24.19.0 / npm 11.9.0
+Dependency installation: npm ci from the exported package-lock.json
+Exit code: 0
+The following output was collected from the two execution-tool output chunks.
+
+> piton-v5-portable@5.0.0 test
+> node --import tsx --test tests/*.test.ts
+
+✔ tests/api.test.ts (2741.665404ms)
+✔ tests/assets.test.ts (493.593702ms)
+✔ tests/curriculum-grading.test.ts (20170.756468ms)
+✔ tests/curriculum-python.test.ts (138431.022573ms)
+✔ tests/curriculum.test.ts (3079.735529ms)
+✔ tests/runtime-bootstrap.test.ts (2720.360128ms)
+✔ tests/runtime-protocol.test.ts (382.097743ms)
+✔ tests/runtime.test.ts (70836.096862ms)
+✔ tests/ui-render.test.ts (1556.071209ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 138450.29148
