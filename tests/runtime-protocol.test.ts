@@ -50,6 +50,7 @@ test('generated iframe has an opaque origin and an offline blob-only CSP', async
   assert.ok(document.indexOf('Content-Security-Policy') < document.indexOf('<script'));
   assert.match(source, /event\.source !== parent/);
   assert.match(source, /event\.data\.nonce !== nonce/);
-  assert.match(source, /new Worker\(url, \{ type: 'module'/);
+  assert.match(source, /new Worker\(url, \{ name: 'piton-python' \}\)/);
+  assert.doesNotMatch(source, /new Worker\(url, \{[^}]*type: 'module'/);
   // These static assertions guard configuration regressions; they are not browser CSP verification.
 });

@@ -23,7 +23,9 @@
     if (active) { port.postMessage({ type: 'fatal', id: data.id, message: 'Исполнитель занят.' }); return; }
     try {
       const url = URL.createObjectURL(new Blob([workerSource], { type: 'text/javascript' }));
-      const worker = new Worker(url, { type: 'module', name: 'piton-python' });
+      // Blob module workers fail to start from Chromium's opaque-origin sandboxed iframes.
+      // The worker uses dynamic import() for Pyodide, so it does not need module-worker mode.
+      const worker = new Worker(url, { name: 'piton-python' });
       const job = { id: data.id, worker, url, ready: false, timer: undefined };
       active = job;
       job.timer = setTimeout(() => finish({ type: 'timeout', phase: 'loading' }), data.payload.limits.initializationMs);

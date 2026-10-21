@@ -6,6 +6,7 @@ import { createPythonRunner, runtimeVersion } from '../../packages/runtime';
 import type { ExecutionCase, PythonRunner, RunContext, RunProgress, RunResult, TestCase } from '../../packages/runtime';
 import { useApp } from '../context';
 import { api, post, profileQuery } from '../lib/api';
+import { errorHelpText } from '../lib/errorHelp';
 import { useDraft } from '../lib/useDraft';
 import { downloadFile, modeLabels } from '../lib/utils';
 import { Arrow, Badge, Button, EmptyState, Icon, Link, Modal } from '../components/ui';
@@ -304,15 +305,7 @@ function TraceView({ result, cursor, onChange }: { result: RunResult | null; cur
   return <div className="trace-view"><div className="trace-navigation"><button className="icon-button" aria-label="Предыдущий шаг" disabled={cursor === 0} onClick={() => onChange(cursor - 1)}><Arrow direction="left" /></button><label><span>Шаг {cursor + 1} из {trace.length} · строка <b>{current.line}</b></span><input type="range" min="0" max={trace.length - 1} value={cursor} onChange={event => onChange(Number(event.target.value))} aria-label="Шаг исполнения Python" /></label><button className="icon-button" aria-label="Следующий шаг" disabled={cursor >= trace.length - 1} onClick={() => onChange(cursor + 1)}><Arrow /></button></div><p className="console-muted">Состояние перед выполнением выделенной строки.</p><div className="variables-table"><table><thead><tr><th>Переменная</th><th>Значение</th></tr></thead><tbody>{Object.entries(current.locals).map(([name, value]) => <tr key={name}><td><code>{name}</code></td><td><code>{JSON.stringify(value)}</code></td></tr>)}{!Object.keys(current.locals).length && <tr><td colSpan={2}>Переменные пока не созданы.</td></tr>}</tbody></table></div>{result?.truncated.trace && <p className="console-warning">Показана ограниченная часть длинной трассы.</p>}</div>;
 }
 function ErrorHelp({ type, category }: { type: string; category: string }) {
-  const help = type === 'IndentationError' || type === 'TabError' ? 'Проверь отступы: строки внутри for, if и def начинаются с четырёх пробелов.'
-    : type === 'NameError' ? 'Python не нашёл это имя. Сравни написание и убедись, что значение создано до использования.'
-      : type === 'TypeError' ? 'Операция получила неподходящий тип или число аргументов. Посмотри на входные данные и вызов функции.'
-        : type === 'SyntaxError' ? 'Проверь двоеточие, скобки и кавычки рядом с отмеченной строкой.'
-          : type === 'IndexError' ? 'Индекс вышел за границу списка. Нумерация начинается с нуля; пустой список требует отдельного внимания.'
-            : category.includes('boundary') || type.includes('Boundary') ? 'Робот дошёл до границы. Проверь, нет ли лишней команды или повторения.'
-              : type === 'FileNotFoundError' ? 'Сравни имя в open(...) с файлом в разделе «Файлы проекта».'
-                : 'Начни с отмеченной строки. Сравни то, что ожидалось, с настоящими значениями на вкладке «По шагам».';
-  return <p className="error-help">{help}</p>;
+  return <p className="error-help">{errorHelpText(type, category)}</p>;
 }
 function playSuccessTone() {
   try { const context = new AudioContext(); const gain = context.createGain(); gain.connect(context.destination); gain.gain.setValueAtTime(0.055, context.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.55); const oscillator = context.createOscillator(); oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(523.25, context.currentTime); oscillator.frequency.setValueAtTime(783.99, context.currentTime + 0.18); oscillator.connect(gain); oscillator.start(); oscillator.stop(context.currentTime + 0.55); oscillator.onended = () => { void context.close(); }; } catch { /* Sound is optional and never part of grading. */ }
